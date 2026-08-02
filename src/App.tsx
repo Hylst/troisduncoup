@@ -150,6 +150,7 @@ const ScoreDisplay: React.FC<{
   musicOn: boolean;
   sfxOn: boolean;
 }> = ({ score, highScore, moves, combo, level, targetScore, totalCleared, onToggleMusic, onToggleSfx, musicOn, sfxOn }) => {
+  const [showInfo, setShowInfo] = useState(false);
   return (
     <div className="flex flex-col items-center gap-3 mb-4 w-full">
       {/* Logo */}
@@ -217,7 +218,33 @@ const ScoreDisplay: React.FC<{
         >
           {sfxOn ? '🔊' : '🔈'}
         </button>
+        <button
+          onClick={() => setShowInfo(true)}
+          className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all flex items-center justify-center text-base hover:scale-110 active:scale-95"
+          title="Comment ce jeu a été fait"
+        >
+          ℹ️
+        </button>
       </div>
+
+      {showInfo && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4" onClick={() => setShowInfo(false)}>
+          <div className="w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-3xl bg-slate-900 border border-white/10 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="p-6 space-y-3.5 text-sm leading-relaxed text-white/80">
+              <h3 className="text-xl font-black bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">Comment ce jeu a été fait</h3>
+              <p><strong className="text-white">Stack :</strong> React 19, TypeScript 5.9, Tailwind CSS 4, Vite 7, compilé en un seul fichier HTML, aucune dépendance chargée depuis l'extérieur.</p>
+              <p><strong className="text-white">Graphismes :</strong> gemmes rendues en DOM/CSS avec dégradés et animations (apparition, destruction, particules), aucun Canvas.</p>
+              <p><strong className="text-white">Musique &amp; sons :</strong> synthétisés en direct avec l'API Web Audio, aucun fichier audio chargé.</p>
+              <p><strong className="text-white">Interactions :</strong> glisser-déposer ou clic sur deux gemmes adjacentes pour les échanger, uniquement si l'échange crée un alignement.</p>
+              <p><strong className="text-white">Architecture :</strong> moteur de jeu pur (<code>gameEngine.ts</code>) séparé du rendu, hook dédié (<code>useGame.ts</code>) qui orchestre les cascades de résolution.</p>
+              <p><strong className="text-white">Algorithmes notables :</strong> détection d'alignements de 3 ou plus, verticaux et horizontaux ; un alignement de 4 crée une gemme rayée (efface toute une ligne ou colonne), un alignement de 5 crée une gemme arc-en-ciel, une forme en L ou en T crée une bombe. Résolution en cascade : chaque destruction fait tomber les gemmes du dessus et peut déclencher de nouveaux alignements automatiquement.</p>
+            </div>
+            <div className="border-t border-white/10 p-4 text-center">
+              <button onClick={() => setShowInfo(false)} className="px-6 py-2.5 rounded-xl font-black text-white bg-gradient-to-r from-pink-500 to-purple-500 hover:brightness-110 active:scale-95 transition-all">Fermer</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
